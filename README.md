@@ -1,9 +1,9 @@
-Here is the updated, patent-grade README.md text formatted so that it pastes cleanly on touchscreens without markdown code block rendering issues:
-# ML-Based Cybersecurity System Using Synthetic Data for Real-Time Anomaly Detection
+Here is the updated README.md text with your exact title **Intelligent Machine Learning-Based Cybersecurity System Using Synthetic Data for Real-Time Anomaly Detection** included:
+# Intelligent Machine Learning-Based Cybersecurity System Using Synthetic Data for Real-Time Anomaly Detection
 **Course Code:** VTU BCS501
 **Author:** Vishal Ravi
 ## 📌 Executive Summary
-This project presents an Intrusion Detection System (IDS) designed to identify malicious network activities in real time using Machine Learning. Using synthetic traffic profiles generated via standard statistical distributions, the system trains a **Random Forest Classifier** to evaluate incoming network packets.
+This project presents an Intelligent Intrusion Detection System (IDS) designed to identify malicious network activities in real time using Machine Learning. Using synthetic traffic profiles generated via standard statistical distributions, the system trains a **Random Forest Classifier** to evaluate incoming network packets and issue security alerts.
 ## 🏗 System Architecture
  * **Phase 1:** Synthetic Network Data Generation
  * **Phase 2:** Feature Preprocessing & Stratified Train/Test Split
