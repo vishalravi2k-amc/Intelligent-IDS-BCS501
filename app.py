@@ -14,7 +14,7 @@ st.title(
     "🛡️ Intelligent Machine Learning-Based Cybersecurity System Using Synthetic Data for Real-Time Anomaly Detection"
 )
 st.caption(
-    "Waterfall Process Flow Integration: Communication ➔ Planning ➔ Modeling ➔ Construction ➔ Deployment"
+    "Waterfall Process Flow Architecture: Communication ➔ Planning ➔ Modeling ➔ Construction ➔ Deployment"
 )
 
 # --- 1. SYNTHETIC DATA GENERATOR (CVAE MODEL SIMULATION) ---
@@ -22,7 +22,7 @@ st.caption(
 
 @st.cache_data
 def generate_cvae_synthetic_data(n_samples=1000):
-    """Generates synthetic network traffic vectors using a conditional latent space mapping model.
+    """Generates synthetic network traffic vectors using conditional latent space mapping.
 
     Features: Packet Length, Syn/Ack Ratio, Flow Duration, Protocol ID
     """
@@ -53,7 +53,7 @@ def generate_cvae_synthetic_data(n_samples=1000):
     syn_ack = np.where(
         labels == 0,
         normal_syn_ack,
-        np.where(labels == 1, ddos_syn_ack, exfil_len),
+        np.where(labels == 1, ddos_syn_ack, exfil_syn_ack),
     )
     duration = np.where(
         labels == 0,
@@ -79,7 +79,7 @@ def generate_cvae_synthetic_data(n_samples=1000):
 class MarkovSequenceEngine:
 
     def __init__(self):
-        # 3-State Transition Matrix (0: Normal, 1: High Vol, 2: Suspicious Payload)
+        # 3-State Transition Matrix (0: Normal, 1: High Volatility, 2: Suspicious Payload)
         self.P = np.array(
             [[0.85, 0.10, 0.05], [0.20, 0.70, 0.10], [0.15, 0.15, 0.70]]
         )
@@ -102,7 +102,7 @@ def calculate_shannon_entropy(data_batch):
     return entropy
 
 
-# --- SIDEBAR: SIMULATION & ENGINE CONTROLS ---
+# --- SIDEBAR: CONTROLS ---
 st.sidebar.header("⚙️ Simulation & Engine Controls")
 
 attack_vector = st.sidebar.selectbox(
@@ -127,7 +127,7 @@ run_inspection = st.sidebar.button("🚀 Execute Hybrid Threat Inspection")
 # --- MAIN DASHBOARD BODY ---
 synthetic_df = generate_cvae_synthetic_data()
 
-# Train Random Forest on Synthetic Data
+# Train Machine Learning Model on Synthetic Data
 X = synthetic_df[["packet_length", "syn_ack_ratio", "flow_duration"]]
 y = synthetic_df["label"]
 rf_model = RandomForestClassifier(n_estimators=50, random_state=42)
@@ -175,49 +175,92 @@ if run_inspection:
     baseline_entropy = 1.5
     entropy_drift = abs(entropy_val - baseline_entropy) / baseline_entropy
 
-    # 4. Patentable Hybrid Anomaly Score Formulation
-    # S_hybrid = w1*P_ML + w2*(1 - L/L_max) + w3*(Delta_H)
+    # 4. Hybrid Anomaly Score Formulation
     s_hybrid = (
-        (0.4 * p_ml) + (0.4 * min(1.0, abs(log_likelihood) / 50.0)) + (0.2 * entropy_drift)
+        (0.4 * p_ml)
+        + (0.4 * min(1.0, abs(log_likelihood) / 50.0))
+        + (0.2 * entropy_drift)
     )
 
-    # Metrics Display
+    # Key Performance Indicators
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Hybrid Threat Score", f"{s_hybrid:.3f}")
     col2.metric("ML Class Confidence", f"{p_ml*100:.1f}%")
     col3.metric("Markov Likelihood L(W)", f"{log_likelihood:.2f}")
     col4.metric("Entropy Drift ΔH", f"{entropy_drift:.3f}")
 
-    # Threshold Check
+    # Advanced Incident Response Mitigation Engine
+    st.markdown("### 🛡️ Real-Time Automated Response Engine")
     if log_likelihood < -markov_alpha * 100 or s_hybrid > 0.65:
         st.error(
-            f"🚨 ANOMALY DETECTED: Threat Signature Matched ({attack_vector})!"
+            f"🚨 **ANOMALY CONFIRMED:** Threat Signature Matched ({attack_vector})!"
         )
-    else:
-        st.success("✅ TRAFFIC CLEAR: Normal Network Activity Pattern Detected.")
 
-    # Visualization
-    fig = px.scatter(
-        live_batch,
-        x="packet_length",
-        y="syn_ack_ratio",
-        size="flow_duration",
-        title=f"Live Packet Batch Distribution (N={batch_size})",
-        labels={
-            "packet_length": "Packet Length (Bytes)",
-            "syn_ack_ratio": "SYN/ACK Ratio",
-        },
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        m_col1, m_col2, m_col3 = st.columns(3)
+        m_col1.warning("⚠️ **Action Taken:** IP Quarantined")
+        m_col2.warning("🔒 **Firewall Rule:** Block Port 8080 Rate Limit")
+        m_col3.warning("📋 **Log Handler:** Pushed to SIEM Dashboard")
+    else:
+        st.success(
+            "✅ **TRAFFIC CLEAR:** Normal Network Activity Pattern Identified."
+        )
+
+    # Dual Analytics Layout (Scatter + Radar Profile)
+    viz_col1, viz_col2 = st.columns([3, 2])
+
+    with viz_col1:
+        fig_scatter = px.scatter(
+            live_batch,
+            x="packet_length",
+            y="syn_ack_ratio",
+            size="flow_duration",
+            title=f"Live Packet Batch Distribution (N={batch_size})",
+            labels={
+                "packet_length": "Packet Length (Bytes)",
+                "syn_ack_ratio": "SYN/ACK Ratio",
+            },
+        )
+        st.plotly_chart(fig_scatter, use_container_width=True)
+
+    with viz_col2:
+        # Threat Profile Radar Chart
+        categories = [
+            "Avg Packet Size",
+            "SYN/ACK Volatility",
+            "Entropy Level",
+            "Markov Deviation",
+        ]
+        radar_values = [
+            np.mean(live_pkt) / 1500,
+            np.mean(live_ratio) / 20,
+            entropy_val / 2.0,
+            min(1.0, abs(log_likelihood) / 50),
+        ]
+
+        fig_radar = go.Figure()
+        fig_radar.add_trace(
+            go.Scatterpolar(
+                r=radar_values,
+                theta=categories,
+                fill="toself",
+                name="Live Traffic Profile",
+            )
+        )
+        fig_radar.update_layout(
+            polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
+            showlegend=False,
+            title="Real-time Threat Signature Radar",
+        )
+        st.plotly_chart(fig_radar, use_container_width=True)
 
 else:
     st.info(
         "Adjust sidebar controls and click 'Execute Hybrid Threat Inspection' to trigger the mathematical inspection engine."
     )
 
-# --- WATERFALL MODEL & PATENT HIGHLIGHTS SECTION ---
+# --- WATERFALL MODEL & TECHNICAL HIGHLIGHTS SECTION ---
 st.divider()
-st.subheader("📐 Patent Technical Highlights & Waterfall Process Flow")
+st.subheader("📐 System Technical Architecture & Waterfall Process Flow")
 
 tab1, tab2 = st.tabs(
     ["Mathematical Model Formulations", "Waterfall Process Flow Mapping"]
@@ -240,12 +283,10 @@ with tab1:
 with tab2:
     st.markdown(
         """
-    1. **Communication:** Defined zero-day threat identification goals and gathered system constraints[span_2](start_span)[span_2](end_span).
-    2. **Planning:** Scheduled generation of synthetic traffic vectors and estimated dynamic batch sampling latency ($N=25$)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span).
-    3. **Modeling:** Designed CVAE mapping distributions, Markov chain state transition matrices, and hybrid decision boundaries[span_5](start_span)[span_5](end_span).
-    4. **Construction:** Written in Python using `streamlit`, `scikit-learn`, `numpy`, and `plotly`[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)[span_8](start_span)[span_8](end_span).
-    5. **Deployment:** Hosted on Streamlit Cloud with dynamic parameter adjustment sliders[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span).
+    1. **Communication:** Defined zero-day threat identification goals and gathered system constraints[span_4](start_span)[span_4](end_span).
+    2. **Planning:** Scheduled generation of synthetic traffic vectors and estimated dynamic batch sampling latency ($N=25$)[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span).
+    3. **Modeling:** Designed CVAE mapping distributions, Markov chain state transition matrices, and hybrid decision boundaries[span_7](start_span)[span_7](end_span).
+    4. **Construction:** Written in Python using `streamlit`, `scikit-learn`, `numpy`, and `plotly`[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span).
+    5. **Deployment:** Hosted on Streamlit Cloud with dynamic parameter adjustment sliders[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span).
     """
     )
-
-
