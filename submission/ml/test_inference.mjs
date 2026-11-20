@@ -1,0 +1,11 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {predict,parseCSV,evaluate,validate} from '../dist/inference.mjs';
+const model=JSON.parse(fs.readFileSync(new URL('../dist/model.json',import.meta.url))),rows=JSON.parse(fs.readFileSync(new URL('../dist/evaluation.json',import.meta.url)));
+for(const row of rows)assert.ok(Math.abs(predict(model,row.values)-row.probability)<1e-12);
+assert.equal(evaluate(rows,.5).tp,309);assert.equal(evaluate(rows,.5).fp,17);
+const csv=fs.readFileSync(new URL('../dist/sample_traffic.csv',import.meta.url),'utf8');assert.equal(parseCSV(csv,model.features).length,150);
+assert.throws(()=>parseCSV('x,y\n1,2',model.features),/Missing/);assert.throws(()=>parseCSV(model.features.join(',')+'\n0,1,2,3,4,5,2,.1',model.features),/invalid/);
+assert.throws(()=>parseCSV(model.features.join(',')+'\n,1,2,3,4,5,.2,.1',model.features),/invalid/);
+assert.equal(validate([0,1,2,3,4,5,.2,.1]),true);
+const indices=[7,6,5,4,3,2,1,0];const sample=rows[0].values;assert.deepEqual(parseCSV(indices.map(i=>model.features[i]).join(',')+'\n'+indices.map(i=>sample[i]).join(','),model.features)[0],sample);
+assert.ok(evaluate(rows,.1).recall>=evaluate(rows,.9).recall);
+console.log('PASS: all 1,200 exported predictions match Python; metrics, reordered CSV, invalid ranges, missing values and threshold behavior verified.');
