@@ -97,7 +97,7 @@ Sentinel is a **browser-based anomaly-detection laboratory**, not an operational
 
 - Synthetic traffic scenario generation and replay.
 - Binary anomaly scoring using a trained Random Forest.
-- Eight numeric features: \`packet_bytes\`, \`duration_ms\`, \`packets_per_second\`, \`failed_logins\`, \`unique_ports\`, \`outbound_kb\`, \`syn_ratio\`, and \`error_rate\`.
+- Eight numeric features: `packet_bytes`, `duration_ms`, `packets_per_second`, `failed_logins`, `unique_ports`, `outbound_kb`, `syn_ratio`, and `error_rate`.
 - Manual and CSV input, with in-browser validation.
 - Synthetic holdout evaluation, visualizations, and data exports.
 - Basic responsiveness and user-facing documentation.
@@ -164,7 +164,7 @@ This table describes an appropriate **management interpretation**, not a reconst
 
 ### Dependency sequence
 
-\`Requirements → Data schema → Training/evaluation → Model export → Browser integration → Tests → Demo/submission\`
+`Requirements → Data schema → Training/evaluation → Model export → Browser integration → Tests → Demo/submission`
 
 The UI and documentation can be worked on concurrently after the interfaces and scope are agreed upon.
 
@@ -241,11 +241,11 @@ Sentinel shows why project management is necessary even for a student software p
 
 Reproduce the training and automated checks using the commands documented in [README.md](../README.md):
 
-\`\`\`bash
+```bash
 cd submission
 python -m pip install -r requirements.txt
 python ml/train.py
 node ml/test_inference.mjs
-\`\`\`
+```
 
 **Faculty note:** This document addresses the *specified introductory part of Module 4*. The term **10 hours** labels the full module's teaching allocation, not an estimate of time spent developing Sentinel.
