@@ -17,6 +17,11 @@ https://sentinel-synth-cybersecurity.vishalravi20k.chatgpt.site
 
 The Sites deployment starts owner-private. The repository and local demo can be used independently; sharing the hosted site requires changing its access setting.
 
+
+## BCS501 Module 4 — Project Management Documentation
+
+- [Introduction to Project Management: Project and Importance of Project Management](docs/MODULE_4_PROJECT_MANAGEMENT.md) — Team 5, Section B; applies project-management concepts to the verified Sentinel implementation.
+
 ## Final implementation
 
 The `submission/` folder is the current, self-contained submission version. Earlier root notebooks, `app.py`, and Markov-model code are retained as historical experiments, not the deployed implementation. This README supersedes earlier unverified performance claims.
